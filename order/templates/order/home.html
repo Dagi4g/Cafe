@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sticky Bottom Button Example</title>
+    <style>
+        /* Basic page styling */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            /* IMPORTANT: Add bottom padding/margin to prevent content from hiding behind the fixed button */
+            padding-bottom: 100px;  /*Adjust this value to be taller than your button */
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        /* Style for the content to make it clear we can scroll */
+        .content {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #0066cc;
+            text-align: center;
+        }
+
+        p {
+            margin-bottom: 20px;
+        }
+
+        /* This creates the "card" look for our dummy content */
+        .card {
+            background-color: #f0f7ff;
+            border-left: 4px solid #0066cc;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        /* THE STICKY BUTTON STYLES */
+        .sticky-bottom-button {
+            position: fixed;        /* Fixes the element relative to the viewport */
+            bottom: 0;              /* Sticks it to the very bottom */
+            left: 20;                /* Start from the left edge */
+            width: 80%;            /* Make it full width */
+            background: linear-gradient(90deg, #0066cc, #004999);
+            color: white;
+            text-align: center;
+            padding: 16px 0;
+            /*box-shadow: 0 4px 10px rgba(0,0,0,0.15);*/
+            z-index: 1000;          /* Stays above all other content */
+            font-size: 1.2rem;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        /* Style the actual button inside the container */
+        .sticky-bottom-button button {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+            padding: 10px 0px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        /* Hover effect for better interactivity */
+        .sticky-bottom-button button:hover {
+            background: white;
+            color: #0066cc;
+            transform: scale(1.05);
+        }
+
+        /* Add a smooth shadow to the button container */
+        .sticky-bottom-button button:active {
+            transform: scale(0.95);
+        }
+        
+        /* Optional: Add a subtle indicator that more content is below (hidden by the button) */
+        .scroll-indicator {
+            text-align: center;
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 40px;
+            padding: 10px;
+            border-top: 2px dashed #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MAIN PAGE CONTENT -->
+    <div class="content">
+        <h1>📱 Always-Visible Bottom Button</h1>
+        <p>This page demonstrates a button that stays fixed at the bottom of the screen no matter how far you scroll. Try scrolling down to see how the button remains in place!</p>
+        
+        <div class="card">
+            <strong>🔧 How it works:</strong> The button container uses <code>position: fixed;</code> with <code>bottom: 0;</code>. The page content has <code>padding-bottom</code> to ensure nothing gets hidden behind it.
+        </div>
+
+        <!-- Dummy content to create scroll -->
+        <h2>Section 1: Introduction</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        
+        <h2>Section 2: Features</h2>
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        
+        <h2>Section 3: More Details</h2>
+        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+        
+        <h2>Section 4: Additional Content</h2>
+        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.</p>
+        
+        <h2>Section 5: Keep Scrolling</h2>
+        <p>You'll notice the blue button with "Get Started Now" follows you all the way down. This is perfect for calls-to-action that should always be accessible!</p>
+        
+        <!-- More dummy content to ensure plenty of scrolling -->
+        <div style="background-color: #e9e9e9; padding: 15px; border-radius: 5px;">
+            <h3>📝 Scroll Test Area</h3>
+            <p>The content below is just filler to make the page longer. Keep going - the button will still be there!</p>
+            <ul>
+                <li>Item 1: More scrolling content</li>
+                <li>Item 2: Even more scrolling content</li>
+                <li>Item 3: Still scrolling...</li>
+                <li>Item 4: Almost there</li>
+                <li>Item 5: One more section after this</li>
+            </ul>
+        </div>
+        
+        <h2>Final Section</h2>
+        <p>See? The button hasn't moved. It's been fixed to the bottom this whole time. If you've reached the end of the page, you'll also notice the button doesn't overlap the footer area thanks to the padding we added to the body.</p>
+        
+        <div class="scroll-indicator">
+            ⬇️ You've reached the bottom of the content! ⬇️
+        </div>
+    </div>
+
+    <!-- THE STICKY BUTTON - This stays at the bottom always -->
+    <div class="sticky-bottom-button">
+        <button onclick="alert('Button clicked! You can replace this with your own action.')">
+            🚀 Get Started Now
+        </button>
+    </div>
+
+    <!-- Optional: Simple JavaScript to show that the button is interactive -->
+    <script>
+        // This is just to demonstrate that you can add functionality
+        // You can ignore this or modify it to suit your needs
+        console.log('Sticky bottom button example loaded!');
+    </script>
+</body>
+</html>
