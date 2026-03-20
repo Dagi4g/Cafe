@@ -1,22 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cafe</title>
+{% extends "order/base.html" %}
 
-</head>
-<body>
-	<p>hello dagim from menu</p>
+{% block content %}
+<div class="menu-items">
 	<ol>
 	{% for food in menu_list %}
-	<li><p>{{ food.name }}</p>
-	<p>{{ food.discription }}</p>
-	<p>{{ food.price }}</p>
-	<button type='radio'></button>
+	<li><div>{{ food.name }}</div>
+	<div>{{ food.discription }}</div>
+	<div>{{ food.price }} {{food.currency }}</div>
+	<div class="select-btn">
+		<button type="select" >select</button>
+	</div>
 	</li>
 	{% endfor %}
+	<div class="fixed-btn"><button> order </button>
+	</div>
 	</ol>
+</div>
 
-</body>
-</html>
+{% endblock content %}
+
+
