@@ -1,13 +1,16 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title> Cafe </title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static "order/home.css" %}">
+    <link rel="stylesheet" href="{% static 'order/css/home.css' %}">
+    <script src="{% static 'order/js/home.js' %}"></script>
 </head>
-<body >
+<body data-theme="light">
 	<div class="app-container">
 		{%block content %}{%endblock content%}
 	</div>

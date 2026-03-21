@@ -1,22 +1,43 @@
-{% extends "order/base.html" %}
+{% extends 'order/base.html' %}
 
 {% block content %}
-<div class="menu-items">
-	<ol>
-	{% for food in menu_list %}
-	<li><div>{{ food.name }}</div>
-	<div>{{ food.discription }}</div>
-	<div>{{ food.price }} {{food.currency }}</div>
-	<div class="select-btn">
-		<button type="select" >select</button>
-	</div>
-	</li>
-	{% endfor %}
-	<div class="fixed-btn"><button> order </button>
-	</div>
-	</ol>
-</div>
+    <div class="header">
+        <p>Hello Dagim, what would you like to eat?</p>
+    </div>
+
+    <div class="menu-container">
+        <ul class="menu-list">
+            {% for food in menu_list %}
+            <li class="menu-item" data-id="{{ food.id }}" data-price="{{ food.price }}">
+                <div class="item-main">
+                    <div class="item-info">
+                        <div class="food-name">{{ food.name }}</div>
+                        <p class="food-description">{{ food.description }}</p>
+                        <span class="food-price">{{ food.price }} {{ food.currency }}</span>
+                    </div>
+                    <button class="select-btn" >Select</button>
+
+                </div>
+                
+                <!-- Quantity Panel (Hidden by default) -->
+                <div class="quantity-panel hidden">
+                    <div class="quantity-controls">
+                        <button class="qty-btn" data-action="decrease">−</button>
+                        <span class="quantity">1</span>
+                        <button class="qty-btn" data-action="increase">+</button>
+                    </div>
+                    <span class="item-total">{{ food.price }} {{ food.currency }}</span>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="sticky-button">
+        <div class="total-price" id="totalDisplay">0 Birr</div>
+        <button class="order-button" id="orderBtn">Order Now</button>
+    </div>
+
 
 {% endblock content %}
-
 
