@@ -94,6 +94,17 @@ document.addEventListener("DOMContentLoaded",function(){
         alert('Order placed! Total: ' + total + ' Birr');
     });
 
+    document.querySelectorAll('.cancel-btn').forEach(button=> {
+        button.addEventListener('click' , function(){
+            const quantityPanel = this.closest('.quantity-panel');
+            quantityPanel.classList.add('hidden')
+
+        });
+    });
+
+
+
+
 
 });
 
