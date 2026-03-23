@@ -5,6 +5,6 @@ app_name = "order"
 
 
 urlpatterns = [
-        path('', views.index, name = 'home')
+        path('', views.scanner, name = 'home')
         ]
 

@@ -6,3 +6,8 @@ def index(request):
     menu_list = Menu.objects.all()
     context = {'menu_list':menu_list}
     return render(request, "order/home.html", context)
+
+def scanner(request):
+    return render(request, "order/qrscanner.html")
+
+
