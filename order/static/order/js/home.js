@@ -71,6 +71,7 @@ document.addEventListener("DOMContentLoaded",function(){
     const orderBtn = document.getElementById('orderBtn');
 
 
+
     orderBtn.addEventListener('click', function() {
         if (orderItems.length === 0) {
             alert('Please select items to order');
@@ -83,21 +84,36 @@ document.addEventListener("DOMContentLoaded",function(){
         // Calculate total again just to be sure
         const total = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         console.log('Total:', total);
+        const csrftoken =  orderBtn.dataset.csrf;
+
+
 
         // Here you'll send to Django
-        // fetch('/api/create-order/', {
-        //     method: 'POST',
-        //     headers: {'Content-Type': 'application/json'},
-        //     body: JSON.stringify({items: orderItems, total: total})
-        // });
+        fetch('/api/create-order/', {
+             method: 'POST',
+             headers: {
+                 'Content-Type': 'application/json',
+                 'X-CSRFToken' : csrftoken,
+             },
+             body: JSON.stringify({items: orderItems, total: total})
+         });
 
-        alert('Order placed! Total: ' + total + ' Birr');
+        alert('Order placed! Total: ' + total + ' Birr' );
     });
 
     document.querySelectorAll('.cancel-btn').forEach(button=> {
         button.addEventListener('click' , function(){
             const quantityPanel = this.closest('.quantity-panel');
-            quantityPanel.classList.add('hidden')
+            const menuItem = quantityPanel.closest(".menu-item")
+            const menuId = menuItem.dataset.id;
+
+
+            quantityPanel.classList.add('hidden');
+            menuItem.querySelector(".select-btn").classList.remove("hidden");
+
+            orderItems = orderItems.filter( item => item.id !== menuId);
+            
+            updateGrandTotal();
 
         });
     });
@@ -167,7 +183,22 @@ function updateGrandTotal() {
         return sum + (item.price * item.quantity);
     }, 0);
 
-    totalDisplay.textContent = total + ' Birr';
+    totalDisplay.textContent = total ;
 }
 
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 

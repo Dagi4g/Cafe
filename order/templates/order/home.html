@@ -2,7 +2,8 @@
 
 {% block content %}
     <div class="header">
-        <p>Hello Dagim, what would you like to eat?</p>
+
+        <p>Welcome! you are at {{ table }} and {{ chair }} what do you want to eat?</p>
     </div>
 
     <div class="menu-container">
@@ -41,8 +42,9 @@
     </div>
 
     <div class="sticky-button">
-        <div class="total-price" id="totalDisplay">0 Birr</div>
-        <button class="order-button" id="orderBtn">Order Now</button>
+        <div class="total-price" id="totalDisplay">0 </div>
+        <span class="total-price" > {{ menu_list.0.currency }}</span>
+        <button class="order-button" id="orderBtn" data-csrf={{ csrf_token }}>Order Now</button>
     </div>
 
 

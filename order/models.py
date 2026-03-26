@@ -11,7 +11,7 @@ class Cafe(models.Model):
 
 class Table(models.Model):
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, related_name='tables')
-    table_id = models.CharField(max_length=50)
+    table_id = models.PositiveIntegerField()
 
     def __str__(self):
         return f"Chair {self.table_id} ({self.cafe.name})"
@@ -19,7 +19,7 @@ class Table(models.Model):
 
 class Chair(models.Model):
     table = models.ForeignKey(Table, on_delete=models.CASCADE, related_name='chairs')
-    chair_id = models.CharField(max_length=50)
+    chair_id = models.PositiveIntegerField()
 
     def __str__(self):
         return f"Table {self.chair_id}"

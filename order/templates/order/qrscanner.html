@@ -1,58 +1,55 @@
 {% extends 'order/base.html' %}
 
 {% block content %}
+ <!-- QR Scanner Library -->  
+<script src="https://unpkg.com/html5-qrcode"></script>  
 
-    <!-- QR Scanner Library -->
-    <script src="https://unpkg.com/html5-qrcode"></script>
+<style>  
+    body {  
+        font-family: Arial, sans-serif;  
+        text-align: center;  
+        padding: 20px;  
+    }  
+    #reader {  
+        width: 300px;  
+        margin: auto;  
+    }  
+</style>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-        }
-        #reader {
-            width: 300px;
-            margin: auto;
-        }
-    </style>
+<h2>Scan QR Code</h2>  
+<div id="reader"></div>  
+<p id="result"></p>  
 
-<h2>Scan QR Code</h2>
-<div id="reader"></div>
-<p id="result"></p>
-
-<script>
-    function isValidURL(string) {
-        try {
-            new URL(string);
-            return true;
-        } catch (_) {
-            return false;
-        }
-    }
-
-    function onScanSuccess(decodedText, decodedResult) {
-        document.getElementById("result").innerText = "Scanned: " + decodedText;
-
-        if (isValidURL(decodedText)) {
-            // Stop scanning before redirect
-            html5QrcodeScanner.clear().then(() => {
-                window.location.href = decodedText;
-            });
-        }
-    }
-
-    function onScanFailure(error) {
-        // ignore scan errors
-    }
-
-    const html5QrcodeScanner = new Html5QrcodeScanner(
-        "reader",
-        { fps: 10, qrbox: 250 }
-    );
-
-    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+<script>  
+    function isValidURL(string) {  
+        try {  
+            new URL(string);  
+            return true;  
+        } catch (_) {  
+            return false;  
+        }  
+    }  
+  
+    function onScanSuccess(decodedText, decodedResult) {  
+        document.getElementById("result").innerText = "Scanned: " + decodedText;  
+  
+        if (isValidURL(decodedText)) {  
+            // Stop scanning before redirect  
+            html5QrcodeScanner.clear().then(() => {  
+                window.location.href = decodedText;  
+            });  
+        }  
+    }  
+  
+    function onScanFailure(error) {  
+        // ignore scan errors  
+    }  
+  
+    const html5QrcodeScanner = new Html5QrcodeScanner(  
+        "reader",  
+        { fps: 10, qrbox: 250 }  
+    );  
+  
+    html5QrcodeScanner.render(onScanSuccess, onScanFailure);  
 </script>
-
-
 {% endblock content %}
