@@ -3,13 +3,13 @@
 {% block content %}
     <div class="header">
 
-        <p>Welcome! you are at {{ table }} and {{ chair }} what do you want to eat?</p>
+        <p>Welcome to {{cafe.id }} ! you are at table number {{ table.id }} and chair number {{ chair.id}} what do you want to eat?</p>
     </div>
 
     <div class="menu-container">
         <ul class="menu-list">
             {% for food in menu_list %}
-            <li class="menu-item" data-id="{{ food.id }}" data-price="{{ food.price }}">
+            <li class="menu-item" data-id="{{ food.id }}" data-price="{{ food.price }}" data-cafe="{{ cafe.id }}" data-table="{{ table.id }}" data-chair="{{ chair.id}}" >
                 <div class="item-main">
                     <div class="item-info">
                         <div class="food-name">{{ food.name }}</div>

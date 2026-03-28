@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse, JsonResponse
@@ -19,7 +19,8 @@ def menu(request):
     menu_list = models.Menu.objects.all()
     chair = models.Chair.objects.all()[0] # the first table from the query.
     table = chair.table
-    context = {'menu_list':menu_list, 'table':table, 'chair': chair}
+    cafe = table.cafe
+    context = {'menu_list':menu_list, 'table':table, 'chair': chair, 'cafe' : cafe}
     return render(request, "order/home.html", context)
 
 def scanner(request):
@@ -30,7 +31,24 @@ import json
 def create_order(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        print(data)
+
+        
+        for items in data['items']:
+            cafe = get_object_or_404(models.Cafe,id=items['cafe_id'])
+            table = get_object_or_404(models.Table,id=items['table_id'], cafe = cafe)
+            chair = get_object_or_404(models.Chair,id=items['chair_id'], table=table)
+            food = get_object_or_404(models.Menu, id=items["food_id"], cafe=cafe)
+            if not chair.is_occupied:
+                chair.occupy()
+                order = models.Order.objects.create(item=food,chair=chair, cart=items["quantity"])
+
+                print (chair.table)
+                print(items['name'])
+                print(order, order.total_price)
+                context = {'order':order}
+            else: 
+                print(f"{chair} is occupied")
+
         return JsonResponse({"status":"success"})
 
 

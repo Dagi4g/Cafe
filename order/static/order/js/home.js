@@ -54,12 +54,13 @@ document.addEventListener("DOMContentLoaded",function(){
 
             // Update display
             quantitySpan.textContent = quantity;
-
+            // Update in orderItems array
+            updateOrderItem(menuItem);
             // Update the item total
             updateItemTotal(menuItem);
 
-            // Update in orderItems array
-            updateOrderItem(menuItem);
+            
+            updateGrandTotal();
         });
     });
 
@@ -84,7 +85,7 @@ document.addEventListener("DOMContentLoaded",function(){
         // Calculate total again just to be sure
         const total = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         console.log('Total:', total);
-        const csrftoken =  orderBtn.dataset.csrf;
+        const csrftoken =  getCookie("csrftoken");;
 
 
 
@@ -141,6 +142,9 @@ function updateItemTotal(menuItem) {
 // Add item to order array
 function addToOrder(menuItem) {
     const id = menuItem.dataset.id;
+    const cafe_id = menuItem.dataset.cafe;
+    const table_id = menuItem.dataset.table;
+    const chair_id = menuItem.dataset.chair;
     const price = parseFloat(menuItem.dataset.price);
     const name = menuItem.querySelector('.food-name').textContent;
     const quantity = parseInt(menuItem.querySelector('.quantity').textContent);
@@ -151,10 +155,13 @@ function addToOrder(menuItem) {
     if (existingIndex === -1) {
         // Add new
         orderItems.push({
-            id: id,
+            food_id: id,
             name: name,
             price: price,
-            quantity: quantity
+            quantity: quantity,
+            cafe_id : cafe_id,
+            table_id : table_id,
+            chair_id : chair_id 
         });
     } else {
         // Update existing
@@ -188,17 +195,13 @@ function updateGrandTotal() {
 
 function getCookie(name) {
     let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+    if (document.cookie) {
+        document.cookie.split(';').forEach(cookie => {
+            const c = cookie.trim();
+            if (c.startsWith(name + '=')) {
+                cookieValue = c.substring(name.length + 1);
             }
-        }
+        });
     }
     return cookieValue;
 }
-
