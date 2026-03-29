@@ -93,14 +93,34 @@ class Menu(models.Model):
 
 
 class Order(models.Model):
+    class Status(models.TextChoices):
+        PENDING = 'pending', 'Pending'
+        CONFIRMED = 'confirmed', 'Confirmed'
+        PREPARING = 'preparing', 'Preparing'
+        READY = 'ready', 'Ready'
+        COMPLETED = 'completed', 'Completed'
+        CANCELLED = 'cancelled', 'Cancelled'
+        REFUNDED = 'refunded', 'Refunded'
+    
     date_time = models.DateTimeField(auto_now_add=True)
     item = models.ForeignKey(Menu, on_delete=models.CASCADE, related_name='orders')
     cart = models.PositiveIntegerField()
     chair = models.ForeignKey(Chair, on_delete=models.CASCADE, related_name='orders')
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PENDING
+    )
     
+
     @property
     def total_price(self):
         return self.item.price * self.cart
+
+    @property
+    def currency(self):
+        return self.item.currency
+
 
     def __str__(self):
         return f"Order {self.id} - {self.item.name}"

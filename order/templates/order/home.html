@@ -1,40 +1,47 @@
 {% extends 'order/base.html' %}
 
 {% block content %}
-    <div class="header">
 
-        <p>Welcome to {{cafe.id }} ! you are at table number {{ table.id }} and chair number {{ chair.id}} what do you want to eat?</p>
+<form method="POST" action="{% url 'order:create_order' cafe_id=cafe.id table_id=table.id chair_id=chair.id %}">
+    {% csrf_token %}
+
+    <div class="header">
+        <p>
+            Welcome to {{ cafe.name }}! You are at table number {{ table.table_id }} 
+            and chair number {{ chair.chair_id }}. What do you want to eat?
+        </p>
     </div>
 
     <div class="menu-container">
         <ul class="menu-list">
+
             {% for food in menu_list %}
-            <li class="menu-item" data-id="{{ food.id }}" data-price="{{ food.price }}" data-cafe="{{ cafe.id }}" data-table="{{ table.id }}" data-chair="{{ chair.id}}" >
+            <li class="menu-item">
                 <div class="item-main">
                     <div class="item-info">
                         <div class="food-name">{{ food.name }}</div>
                         <p class="food-description">{{ food.description }}</p>
-                        <span class="food-price">{{ food.price }} {{ food.currency }}</span>
+                        <span class="food-price">
+                            {{ food.price }} {{ food.currency }}
+                        </span>
                     </div>
-                    <button class="select-btn" >Select</button>
 
-                </div>
-                
-                <!-- Quantity Panel (Hidden by default) -->
-                <div class="quantity-panel hidden">
-                    <div class="quantity-controls">
-                        <button class="qty-btn" data-action="decrease">−</button>
-                        <span class="quantity">1</span>
-                        <button class="qty-btn" data-action="increase">+</button>
+                    <!-- Quantity Input -->
+                    <div class="quantity-input">
+                        <label for="food_{{ food.id }}">Quantity:</label>
+                        <input 
+                            id="food_{{ food.id }}"
+                            type="number" 
+                            name="quantity_{{ food.id }}" 
+                            value="0" 
+                            min="0"
+                        >
                     </div>
-                    <span class="item-total">{{ food.price }} {{ food.currency }}</span>
-                    <button class="cancel-btn"> cancel </button>
-
                 </div>
             </li>
             {% empty %}
-            <div class='item-info'>
-                <p> sorry we don't have manu know</p>
+            <div class="item-info">
+                <p>Sorry, we don't have a menu now.</p>
             </div>
             {% endfor %}
 
@@ -42,11 +49,11 @@
     </div>
 
     <div class="sticky-button">
-        <div class="total-price" id="totalDisplay">0 </div>
-        <span class="total-price" > {{ menu_list.0.currency }}</span>
-        <button class="order-button" id="orderBtn" data-csrf={{ csrf_token }}>Order Now</button>
+        <button type="submit" class="order-button">
+            Order Now
+        </button>
     </div>
 
+</form>
 
 {% endblock content %}
-
