@@ -1,11 +1,80 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, JsonResponse
 
 import json
-from . import models
 import qrcode
 from io import BytesIO
 
+from django.views import View
+from .models import Cafe, Table, Chair, Menu, Order, OrderItem
+from .forms import OrderItemFormSet
+
+class CreateOrderView(View):
+    def get(self, request, cafe_id, table_id, chair_id):
+        cafe = get_object_or_404(Cafe, id=cafe_id)
+        table = get_object_or_404(Table, id=table_id, cafe=cafe)
+        chair = get_object_or_404(Chair, id=chair_id, table=table)
+
+        menu_items = Menu.objects.filter(cafe=cafe)
+        print(menu_items)
+        initial_data = [{'food': item.id, 'quantity': 0, 'price': item.price} for item in menu_items]
+        formset = OrderItemFormSet(initial=initial_data)
+
+        # Build a paired list of (form, menu item)
+        paired_list = list(zip(formset.forms, menu_items))
+        print(formset.forms)
+        print(paired_list)
+        context = {
+                'cafe': cafe,
+                'table': table,
+                'chair': chair,
+                'formset': formset,
+                'paired_list': paired_list,  # send this to template
+            }
+
+        
+        return render(request, 'order/menu.html', context)
+
+    def post(self, request, cafe_id, table_id, chair_id):
+        cafe = get_object_or_404(Cafe, id=cafe_id)
+        table = get_object_or_404(Table, id=table_id, cafe=cafe)
+        chair = get_object_or_404(Chair, id=chair_id, table=table)
+
+        formset = OrderItemFormSet(request.POST)
+        if formset.is_valid():
+            # Filter out items with quantity = 0
+            valid_items = [form for form in formset if form.cleaned_data['quantity'] > 0]
+
+            if not valid_items:
+                return redirect('menu', cafe_id=cafe.id, table_id=table.id, chair_id=chair.id)
+
+            # Create Order
+            order = Order.objects.create(
+                chair=chair,
+                status='pending'
+            )
+
+            for form in valid_items:
+                item = form.save(commit=False)
+                item.order = order
+                item.save()
+
+            return redirect('confirm_order', order_id=order.id)
+
+        # If formset invalid, reload menu
+        menu_items = Menu.objects.filter(cafe=cafe)
+        context = {
+            'cafe': cafe,
+            'table': table,
+            'chair': chair,
+            'formset': formset,
+            'menu_items': menu_items,
+        }
+        paired_list = list(zip(formset.forms, menu_items))
+        context['paired_list'] = paired_list
+        return render(request, 'order/menu.html', context)
+
+#need to download pilliow , that is why it isn't working know.
 def generate_qr(request):
     url = f"http://127.0.0.1:8000/menu"
     qr = qrcode.make(url)
@@ -14,42 +83,8 @@ def generate_qr(request):
     qr.save(response, "JPG")
     return response
 
-def menu(request):
-
-    menu_list = models.Menu.objects.all()
-    chair = models.Chair.objects.all()[0] # the first table from the query.
-    table = chair.table
-    cafe = table.cafe
-    context = {'menu_list':menu_list, 'table':table, 'chair': chair, 'cafe' : cafe}
-    return render(request, "order/home.html", context)
-
 def scanner(request):
     return render(request, "order/qrscanner.html")
-
-
-def create_order(request,cafe_id,table_id,chair_id):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        print(data)
-
-        """cafe = get_object_or_404(models.Cafe,id=data['cafe_id'])
-        table = get_object_or_404(models.Table,id=data['table_id'], cafe = cafe)
-        chair = get_object_or_404(models.Chair,id=data['chair_id'], table=table)
-        for items in data['items']:
-            
-            food = get_object_or_404(models.Menu, id=items["food_id"], cafe=cafe)
-            if not chair.is_occupied:
-                chair.occupy()
-                order = models.Order.objects.create(item=food,chair=chair, cart=items["quantity"])
-
-                print (chair.table)
-                print(items['name'])
-                print(order, order.total_price)
-                context = {'order':order}
-            else: 
-                print(f"{chair} is occupied")"""
-
-        return render(request, "order/home.html")
 
 
 

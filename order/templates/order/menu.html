@@ -1,0 +1,40 @@
+{% extends 'order/base.html' %}
+
+{% block content %}
+<div class="header">
+    <h2>Welcome to {{ cafe.name }}!</h2>
+    <p>Table {{ table.table_id }}, Chair {{ chair.chair_id }}</p>
+</div>
+<div class="menu-container">
+<form method="POST">
+    {% csrf_token %}
+    {{ formset.management_form }}
+
+    <ul class="menu-list">
+        {% for form, food in paired_list %}
+        <li class="menu-item">
+            <div class="item-main">
+            <div class="item-info">
+                <div class="food-name">{{ food.name }}</div>
+                <div class="food-description">{{ food.description }}</div>
+                <div class="food-price">{{ food.price  }}</div>
+            </div>
+            {{ form.food }}  {# hidden #}
+            {{ form.price }} {# hidden #}
+            <div class="select-btn">
+            {{ form.quantity }}
+            </div>
+        </li>
+        {% empty %}
+        <div class="item-info"><p> {{ cafe.name }} has no menu items.</p>
+        </div>
+        {% endfor %}
+    </ul>
+            </div>
+    <div class="sticky-button">
+        <button type="submit" class="order-button">Order Now</button>
+    </div>
+</form>
+
+</div>
+{% endblock %}
