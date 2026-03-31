@@ -10,8 +10,7 @@ urlpatterns = [
     path('generate_qr', views.generate_qr, name = 'qr_code'),
     path('cafe/<int:cafe_id>/table/<int:table_id>/chair/<int:chair_id>/menu/',
          CreateOrderView.as_view(), name='menu'),
-    path('order/<int:order_id>/confirm/', 
-         lambda request, order_id: None, name='confirm_order'),  # placeholder
+    path('order/<int:order_id>/confirm/', views.confirm, name="confirm_order"),  # placeholder
 ]
 
 

@@ -61,7 +61,7 @@ class CreateOrderView(View):
                     item.save()
                 chair.occupy()
 
-                return redirect('confirm_order', order_id=order.id)
+                return redirect('order:confirm_order', order_id=order.id)
 
             # If formset invalid, reload menu
             menu_items = Menu.objects.filter(cafe=cafe)
@@ -76,7 +76,7 @@ class CreateOrderView(View):
             context['paired_list'] = paired_list
             return render(request, 'order/menu.html', context)
         else:
-            return HttpResponse(f"{chair} is already occupied")
+            return HttpResponse(f"{chair} is already occupied")#this needs to be changed to a web page that is user friendly .
 
 
 
@@ -92,8 +92,10 @@ def generate_qr(request):
 def scanner(request):
     return render(request, "order/qrscanner.html")
 
-""""def confirm(request, order_id):
-    order = """
+def confirm(request, order_id):
+    order = OrderItem.objects.filter(order_id=order_id)
+    print(order)
+    return render(request, "order/confirm_order.html",{"order":order})
     
 
 
