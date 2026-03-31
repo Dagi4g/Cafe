@@ -94,8 +94,9 @@ def scanner(request):
 
 def confirm(request, order_id):
     order = OrderItem.objects.filter(order_id=order_id)
-    print(order)
-    return render(request, "order/confirm_order.html",{"order":order})
+    total = sum([i.total_price() for i in order])
+    
+    return render(request, "order/confirm_order.html",{"order":order, "total":total})
     
 
 
