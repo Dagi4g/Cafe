@@ -1,34 +1,52 @@
 {% extends 'order/base.html' %}
 
 {% block content %}
-<h2>order for {{order.0.order.chair.table.cafe.name}}</h2>
-<p> at table {{order.0.order.chair.table}} and chair {{order.0.order.chair}}</p>
-<table>
-    <tr>
-        <th>food</th>
-        <th>quantity</th>
-        <th>price</th>
-        <th>amount</th>
-        <th>currency</th>
-    </tr>
-    {% for item in order %}
-    <tr>
-        <td>{{ item.food.name }}</td>
-        <td>{{ item.quantity }}</td>
-        <td> {{ item.price }}</td>
-        <td> {{ item.total_price }}</td>
-        <td> {{ item.food.currency }}</td>
+<div class="receipt-container">
+    <div class="receipt-header">
+        <h2>{{ order.0.order.chair.table.cafe.name }}</h2>
+        <p class="receipt-details">
+            Table {{ order.0.order.chair.table }} | Chair {{ order.0.order.chair }}
+        </p>
+        <p class="receipt-date">{{ order.0.order.date_time|date:"F j, Y, g:i a" }}</p>
+    </div>
 
-    </tr>
-    {% empty %}
-    <p>there is no order</p>
-    {% endfor %}
-    <tr>
-        <th>total</th>
-        <td>{{total}}</td>
-        <td>{{order.0.food.currency}}</td>
-    </tr>
+    <div class="receipt-content">
+        <table class="receipt-table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order %}
+                <tr>
+                    <td class="item-name">{{ item.food.name }}</td>
+                    <td class="item-quantity">{{ item.quantity }}</td>
+                    <td class="item-price">{{ item.price|floatformat:2 }} {{ item.food.currency }}</td>
+                    <td class="item-total">{{ item.total_price|floatformat:2 }} {{ item.food.currency }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="empty-message">No items in this order</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td colspan="3" class="total-label"><strong>Total</strong></td>
+                    <td class="total-amount">
+                        <strong>{{ total|floatformat:2 }} {{ order.0.food.currency }}</strong>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 
-</table>
-
-{% endblock content %}
+    <div class="receipt-footer">
+        <p>Thank you for your order!</p>
+    </div>
+</div>
+{% endblock %}

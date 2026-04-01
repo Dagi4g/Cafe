@@ -11,7 +11,7 @@ class OrderItemForm(forms.ModelForm):
         widgets = {
             'food': forms.HiddenInput(),
             'price': forms.HiddenInput(),
-            'quantity': forms.Select(choices=[("","Select")]+[(i,i) for i in range(1,11)]),
+            'quantity': forms.Select(choices=[("0","Select")]+[(i,i) for i in range(1,11)]),
         }
 
 # Formset for multiple order items

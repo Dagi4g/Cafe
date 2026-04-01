@@ -42,12 +42,19 @@ class CreateOrderView(View):
         if not chair.is_occupied:
 
             formset = OrderItemFormSet(request.POST)
+
             if formset.is_valid():
-                # Filter out items with quantity = 0
-                valid_items = [form for form in formset if form.cleaned_data['quantity'] > 0]
+                # Filter out items with quantity = 0isinstance(int(form.clean_dat['quantity']),int) and
+                valid_items = []
+
+                for form in formset:
+                    print(valid_items)
+                    if  form.cleaned_data['quantity'] > 0:
+                        valid_items.append(form)
+
 
                 if not valid_items:
-                    return redirect('menu', cafe_id=cafe.id, table_id=table.id, chair_id=chair.id)
+                    return redirect('order:menu', cafe_id=cafe.id, table_id=table.id, chair_id=chair.id )
 
                 # Create Order
                 order = Order.objects.create(
@@ -93,10 +100,22 @@ def scanner(request):
     return render(request, "order/qrscanner.html")
 
 def confirm(request, order_id):
-    order = OrderItem.objects.filter(order_id=order_id)
-    total = sum([i.total_price() for i in order])
+    order_items = OrderItem.objects.filter(order_id=order_id)
     
-    return render(request, "order/confirm_order.html",{"order":order, "total":total})
+    if not order_items.exists():
+        # Handle empty order case
+        return render(request, "order/confirm_order.html", {
+            "order": [],
+            "total": 0,
+            "error": "No items found for this order"
+        })
     
-
-
+    total = sum(item.total_price() for item in order_items)
+    
+    context = {
+        "order": order_items,
+        "total": total,
+        "order_info": order_items.first().order  # Access order info safely
+    }
+    
+    return render(request, "order/confirm_order.html", context)
