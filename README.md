@@ -24,10 +24,11 @@ A Django web application for QR code-based ordering in a campus cafe.
 ---
 
 ## Getting Started
+###1, fork the repository 
 
 ```bash
 # Clone the repository
-git clone https://github.com/Dagi4g/Cafe.git
+git clone https://github.com/<your username>/Cafe.git
 cd Cafe
 
 # Install dependencies
@@ -35,7 +36,9 @@ pip install -r requirements.txt
 
 # Run migrations and start the server
 python manage.py migrate
-python manage.py run2. Scan your table’s QR code.
+python manage.py run```
+
+2. Scan your table’s QR code.
 3. Browse menu, order, and pay from your phone.
 4. Staff delivers food to your table.
 
