@@ -64,7 +64,7 @@ python manage.py run
 - Project code is actively being improved. See [recent commits here](https://github.com/Dagi4g/Cafe/commits/master).
     - Examples:
         - [Latest commit](https://github.com/Dagi4g/Cafe/commit/8db2c9aa652d22ec6b25054f1efff2fa2487dabb)
-        - [Earlier commithttps://github.com/Dagi4g/Cafe/commit/45b280ea44cded2e13f3acceb89ad5a617159882)
+        - [Earlier commit (https://github.com/Dagi4g/Cafe/commit/45b280ea44cded2e13f3acceb89ad5a617159882)
         - [All recent activity](https://github.com/Dagi4g/Cafe/commits/master)
 
 ---
