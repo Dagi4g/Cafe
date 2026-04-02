@@ -51,7 +51,7 @@ python manage.py run
 - [ ] QR code generation and mapping for each table
 - [ ] Authentication for staff and students
 - [ ] Order status page and notifications for students
-- [ ] Enhanced payment integration (e.g., PayPal, credit card)
+- [ ] Enhanced payment integration (e.g.,telebirr)
 - [ ] Order history and receipts for users
 - [ ] Mobile design improvements
 - [ ] Tests (unit/integration)
