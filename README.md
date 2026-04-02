@@ -24,7 +24,7 @@ Django
 
 ```bash
 git clone https://github.com/yourusername/cafe.git
-cd campus-cafe
+cd cafe
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
