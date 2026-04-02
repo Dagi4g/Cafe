@@ -23,7 +23,7 @@ Django
 ## Getting Started
 
 ```bash
-git clone https://github.com/yourusername/campus-cafe
+git clone https://github.com/yourusername/cafe.git
 cd campus-cafe
 pip install -r requirements.txt
 python manage.py migrate
