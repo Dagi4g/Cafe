@@ -1,17 +1,18 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views import View
 from django.http import HttpResponse, JsonResponse
 
 import json
 import qrcode
 from io import BytesIO
 
-from django.views import View
 from .models import Cafe, Table, Chair, Menu, Order, OrderItem
 from .forms import OrderItemFormSet
 
 class CreateOrderView(View):
     def get(self, request, cafe_id, table_id, chair_id):
         cafe = get_object_or_404(Cafe, id=cafe_id)
+    
         table = get_object_or_404(Table, id=table_id, cafe=cafe)
         chair = get_object_or_404(Chair, id=chair_id, table=table)
 
@@ -59,7 +60,7 @@ class CreateOrderView(View):
                 # Create Order
                 order = Order.objects.create(
                     chair=chair,
-                    status='pending'
+                    status=Order.Status.PENDING
                 )
 
                 for form in valid_items:
@@ -100,8 +101,9 @@ def scanner(request):
     return render(request, "order/qrscanner.html")
 
 def confirm(request, order_id):
-    order_items = OrderItem.objects.filter(order_id=order_id)
-    
+    order_items = OrderItem.objects.filter(order_id=order_id, order__status=Order.Status.PENDING)
+
+
     if not order_items.exists():
         # Handle empty order case
         return render(request, "order/confirm_order.html", {
@@ -109,13 +111,17 @@ def confirm(request, order_id):
             "total": 0,
             "error": "No items found for this order"
         })
-    
-    total = sum(item.total_price() for item in order_items)
-    
-    context = {
-        "order": order_items,
-        "total": total,
-        "order_info": order_items.first().order  # Access order info safely
-    }
-    
-    return render(request, "order/confirm_order.html", context)
+
+    if not order_items[0].order.is_expired:
+        
+        total = sum(item.total_price() for item in order_items)
+        
+        context = {
+            "order": order_items,
+            "total": total,
+            "order_info": order_items.first().order  # Access order info safely
+        }
+        
+        return render(request, "order/confirm_order.html", context)
+    else :
+        return HttpResponse("the order has been expired please make another order!")

@@ -102,9 +102,19 @@ class Order(models.Model):
         CANCELLED = 'cancelled', 'Cancelled'
         REFUNDED = 'refunded', 'Refunded'
 
-    date_time = models.DateTimeField(auto_now_add=True)
+    order_time = models.DateTimeField(auto_now_add=True)
     chair = models.ForeignKey(Chair, on_delete=models.CASCADE, related_name='orders')
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
+
+    @property
+    def is_expired(self):
+        timeout = timezone.now() - self.order_time
+        if self.status == self.Status.PENDING and timeout > timedelta(minutes=30):
+            self.delete()
+            return True
+        return False
+
+
 
     def __str__(self):
         return f"Order {self.id}"
@@ -118,5 +128,6 @@ class OrderItem(models.Model):
     def total_price(self):
         return self.price * self.quantity
 
+    
     def __str__(self):
         return f"{self.food.name} x {self.quantity}"
