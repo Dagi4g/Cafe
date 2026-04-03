@@ -9,6 +9,22 @@ from io import BytesIO
 from .models import Cafe, Table, Chair, Menu, Order, OrderItem
 from .forms import OrderItemFormSet
 
+from django.shortcuts import render
+from django.http import HttpResponseRedirect
+
+def show_error(request, error_message=None, error_title=None, redirect_url=None):
+    """Generic error page handler"""
+    if not isinstance(error_message, str) or not isinstance(error_title, str):
+        raise TypeError(f"Expected str, got {type(error_message).__name__} for error_message and {type(error_title).__name__} for error_title")
+
+    context = {
+        'error_message': error_message or 'An unexpected error occurred.',
+        'error_title': error_title.title() or 'Oops! Something went wrong',
+        'redirect_url': redirect_url,
+    }
+    return render(request, 'order/error.html', context)
+
+       
 class CreateOrderView(View):
     def get(self, request, cafe_id, table_id, chair_id):
         cafe = get_object_or_404(Cafe, id=cafe_id)
@@ -28,13 +44,15 @@ class CreateOrderView(View):
                     'table': table,
                     'chair': chair,
                     'formset': formset,
-                    'paired_list': paired_list,  # send this to template
+                    'paired_list': paired_list,  
                 }
 
             
             return render(request, 'order/menu.html', context)
         else:
-            return HttpResponse(f"{chair} is already occupied")
+            return show_error(request,
+                              error_title="Chair Unavialable",
+                              error_message=f"chair {chair.chair_id} in table {chair.table.table_id} is currently occopied, ")
 
     def post(self, request, cafe_id, table_id, chair_id):
         cafe = get_object_or_404(Cafe, id=cafe_id)
@@ -84,7 +102,9 @@ class CreateOrderView(View):
             context['paired_list'] = paired_list
             return render(request, 'order/menu.html', context)
         else:
-            return HttpResponse(f"{chair} is already occupied")#this needs to be changed to a web page that is user friendly .
+            return show_error(request,
+                              error_title="Chair Unavialable",
+                              error_message=f"chair {chair.chair_id} in table {chair.table.table_id} is currently occopied, ")
 
 
 
@@ -106,11 +126,10 @@ def confirm(request, order_id):
 
     if not order_items.exists():
         # Handle empty order case
-        return render(request, "order/confirm_order.html", {
-            "order": [],
-            "total": 0,
-            "error": "No items found for this order"
-        })
+        return show_error(request,
+                          error_title="No Iteam Found",
+                          error_message="This order doesn't exist make an order.")
+
 
     if not order_items[0].order.is_expired:
         
@@ -124,4 +143,6 @@ def confirm(request, order_id):
         
         return render(request, "order/confirm_order.html", context)
     else :
-        return HttpResponse("the order has been expired please make another order!")
+        return show_error(request,
+                          error_message="this order had expired, please make another order!",
+                          error_title="Expired Order")
