@@ -155,7 +155,7 @@ body {
 }
 
 .order-button {
-    background: linear-gradient(90deg, #0066cc, #004999);
+    background: linear-gradient(90deg, #067fff, #004999);
     color: white;
     border: none;
     padding: 14px 32px;
@@ -165,6 +165,17 @@ body {
     cursor: pointer;
 }
 
+.pay-button {
+    background: linear-gradient(90deg, #00f00f, #00f969);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-align:center;
+}
 .total-price {
     font-size: 1.3rem;
     font-weight: bold;

@@ -1,16 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.contrib import messages
+from django.db import  transaction
 
 import json
 import qrcode
 from io import BytesIO
+import uuid
 
 from .models import Cafe, Table, Chair, Menu, Order, OrderItem
 from .forms import OrderItemFormSet
-
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
 
 def show_error(request, error_message=None, error_title=None, redirect_url=None):
     """Generic error page handler"""
@@ -24,9 +24,12 @@ def show_error(request, error_message=None, error_title=None, redirect_url=None)
     }
     return render(request, 'order/error.html', context)
 
+
        
 class CreateOrderView(View):
     def get(self, request, cafe_id, table_id, chair_id):
+        request.session["order_token"] = str(uuid.uuid4())
+        
         cafe = get_object_or_404(Cafe, id=cafe_id)
     
         table = get_object_or_404(Table, id=table_id, cafe=cafe)
@@ -54,7 +57,21 @@ class CreateOrderView(View):
                               error_title="Chair Unavialable",
                               error_message=f"chair {chair.chair_id} in table {chair.table.table_id} is currently occopied, ")
 
-    def post(self, request, cafe_id, table_id, chair_id):
+    @transaction.atomic
+    def post(self, request, cafe_id, table_id, chair_id ):
+        #avoid unnecessry conflicting posts.
+
+        token = request.POST.get('order_token')
+    
+        session_token = request.session.get('order_token')
+        
+
+        if not token or token != session_token:
+            return redirect('order:menu', cafe_id=cafe_id, table_id=table_id, chair_id=chair_id)
+        # Invalidate token after use
+        del request.session['order_token']
+
+
         cafe = get_object_or_404(Cafe, id=cafe_id)
         table = get_object_or_404(Table, id=table_id, cafe=cafe)
         chair = get_object_or_404(Chair, id=chair_id, table=table)
@@ -63,16 +80,15 @@ class CreateOrderView(View):
             formset = OrderItemFormSet(request.POST)
 
             if formset.is_valid():
-                # Filter out items with quantity = 0isinstance(int(form.clean_dat['quantity']),int) and
                 valid_items = []
 
                 for form in formset:
-                    print(valid_items)
                     if  form.cleaned_data['quantity'] > 0:
                         valid_items.append(form)
 
 
                 if not valid_items:
+                    messages.error(request,"please select atleast one iteam.")
                     return redirect('order:menu', cafe_id=cafe.id, table_id=table.id, chair_id=chair.id )
 
                 # Create Order

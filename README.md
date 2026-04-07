@@ -36,13 +36,19 @@ pip install -r requirements.txt
 
 # Run migrations and start the server
 python manage.py migrate
-python manage.py run
+python manage.py runserver
+
 
 ```
 
-2. Scan your table’s QR code.
-3. Browse menu, order, and pay from your phone.
-4. Staff delivers food to your table.
+### How to use it?
+1. got to the home page.
+2. Scan your table’s QR code with the builtin scanner.
+3. Browse menu, order.
+4. Pay with a pay button in the receipt page.
+5. The Waiter delivers food to your table.
+6. The Waiter scans his qrcode badge with the users phone for confirmation .
+
 
 ---
 
@@ -57,15 +63,6 @@ python manage.py run
 - [ ] Tests (unit/integration)
 - [ ] Production-ready deployment instructions
 
----
-
-## Recent Activity
-
-- Project code is actively being improved. See [recent commits here](https://github.com/Dagi4g/Cafe/commits/master).
-    - Examples:
-        - [Latest commit](https://github.com/Dagi4g/Cafe/commit/8db2c9aa652d22ec6b25054f1efff2fa2487dabb)
-        
-        - [All recent activity](https://github.com/Dagi4g/Cafe/commits/master)
 
 ---
 

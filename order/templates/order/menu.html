@@ -9,6 +9,7 @@
 <form method="POST">
     {% csrf_token %}
     {{ formset.management_form }}
+    <input type="hidden" name='order_token' value="{{ request.session.order_token }}">
 
     <ul class="menu-list">
         {% for form, food in paired_list %}
@@ -29,7 +30,13 @@
         <div class="item-info"><p> {{ cafe.name }} has no menu items.</p>
         </div>
         {% endfor %}
+
     </ul>
+    {% if messages %}
+    {% for error in messages %}
+    <div class="error-message">{{ error }}</div>
+    {% endfor %}
+    {% endif %}
             </div>
     <div class="sticky-button">
         <button type="submit" class="order-button">Order Now</button>
