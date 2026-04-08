@@ -3,37 +3,35 @@
 A Django web application for QR code-based ordering in a campus cafe.
 
 ---
+# what it does :
 
-## Project Progress
+an online ordering system with menu to specific cafe ,table and chair.
 
-### ✅ Completed
-- **Django project setup:** The project uses Django and is organized as a standard Django app (`cafe/` and `order/` directories).
-- **Basic order management:** Initial code for handling core order functions is present (in the `order/` directory).
-- **Menu viewing:** Students can view the menu after scanning a table QR code.
-- **Order placement:** Students can order food via the web interface.
-- **Payment system:** Both digital and cash payment options laid out, with payment functionality being worked on in code.
-- **Real-time availability:** Menu updates are suggested; relevant code can be enhanced for real-world use.
-- **Getting Started instructions** provided in the README.
-
-### 🚧 In Progress / Partially Done
-- **Order delivery to table:** Basic logic exists; can be enhanced for seat-specific delivery tracking.
-- **Payment integration:** Cash and digital payment “modes” exist; integration with real payment providers can be expanded.
-- **Project structure:** Contains `requirements.txt`, `manage.py`, and Django directory layout.
-
-
----
+this system replaces the hustle of waiting inline to order , asking for bank account and waiting until the card number is called by the waiters.
 
 ## Getting Started
 ### 1, fork the repository 
 
 ```bash
 # Clone the repository
-git clone https://github.com/<your username>/Cafe.git
-cd Cafe
+git clone https://github.com/<your_username>/Cafe.git
 
+cd Cafe
 # Install dependencies
 pip install -r requirements.txt
 
+```
+## create an environmental variable 
+
+```
+# generate a secrete key using Django 
+
+python -c "from django.core.management.utils import get_random_secret_key;print(get_random_secret_key())"
+
+```
+##### copy the output and save it to new file called > .env 
+
+```
 # Run migrations and start the server
 python manage.py migrate
 python manage.py runserver
@@ -41,8 +39,17 @@ python manage.py runserver
 
 ```
 
-### How to use it?
-1. got to the home page.
+### With gunicorn
+
+
+```
+gunicorn -bind 0.0.0.0:8000 cafe.wsgi:application
+
+```
+> Don't forget to make allowed hosts to the ip adress of the device(server) or "\*"in development.
+
+### How it works?
+1. open home page.
 2. Scan your table’s QR code with the builtin scanner.
 3. Browse menu, order.
 4. Pay with a pay button in the receipt page.
