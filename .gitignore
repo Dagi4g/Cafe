@@ -2,3 +2,4 @@
 cafe_venv/
 __pycache__/
 *.env
+staticfiles/

@@ -29,6 +29,8 @@ def show_error(request, error_message=None, error_title=None, redirect_url=None)
 class CreateOrderView(View):
     def get(self, request, cafe_id, table_id, chair_id):
         request.session["order_token"] = str(uuid.uuid4())
+        print(request.session.session_key)
+
         
         cafe = get_object_or_404(Cafe, id=cafe_id)
     
