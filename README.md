@@ -11,12 +11,17 @@ this system replaces the hustle of waiting inline to order , asking for bank acc
 
 ## Getting Started
 ### 1, fork the repository 
-
+for linux and unix based systems .
 ```bash
 # Clone the repository
 git clone https://github.com/<your_username>/Cafe.git
 
 cd Cafe
+
+# create a vertual environment and activate it
+python -m venv cafe_venv
+source cafe_venv/bin/activate
+
 # Install dependencies
 pip install -r requirements.txt
 
