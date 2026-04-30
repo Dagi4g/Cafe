@@ -1,11 +1,12 @@
 from django.db import models
 from django.utils import timezone
 from datetime import timedelta
+from django.db.models import UniqueConstraint
 
 
 
 class Cafe(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255,unique=True)
     # logo = models.ImageField(upload_to='cafe_logos/')
 
     def __str__(self):
@@ -18,6 +19,12 @@ class Table(models.Model):
 
     def __str__(self):
         return f"Table {self.table_id} ({self.cafe.name})"
+    class Meta:
+        constraints = [
+                models.UniqueConstraint(fields=['cafe','table_id'], name='unique_cafe_table')
+                                        ]
+
+
 
 class Chair(models.Model):
     table = models.ForeignKey(Table, on_delete=models.CASCADE, related_name='chairs')
@@ -25,7 +32,14 @@ class Chair(models.Model):
     occupied = models.BooleanField(default=False)
                                            
     occupied_at = models.DateTimeField(null=True, blank=True)  # When it became occupied
-    
+
+
+    class Meta:
+        constraints = [
+                models.UniqueConstraint(fields=['table','chair_id'], name='unique_table_chair')
+                                        ]
+
+
     def occupy(self):
         """Mark chair as occupied with timestamp"""
         self.occupied = True
@@ -101,6 +115,7 @@ class Order(models.Model):
         COMPLETED = 'completed', 'Completed'
         CANCELLED = 'cancelled', 'Cancelled'
         REFUNDED = 'refunded', 'Refunded'
+        
 
     order_time = models.DateTimeField(auto_now_add=True)
     chair = models.ForeignKey(Chair, on_delete=models.CASCADE, related_name='orders')
