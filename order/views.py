@@ -128,11 +128,11 @@ class CreateOrderView(View):
 
 #need to download pilliow , that is why it isn't working know.
 def generate_qr(request):
-    url = f"http://127.0.0.1:8000/menu"
+    url = f"https://dagi4g.pythonanywhere.com/cafe/1/table/1/chair/1/menu"
     qr = qrcode.make(url)
                 
     response = HttpResponse(content_type="menu/jpg")
-    qr.save(response, "JPG")
+    qr.save(response, "jpeg")
     return response
 
 def scanner(request):
